@@ -14,7 +14,7 @@ class SimpleDB {
         $fid = fopen($this->filename, 'r');
         $result = array();
         while(($line = fgets($fid)) !== FALSE) {
-            $result[] = explode(',', $line);
+            $result[] = explode(',', trim($line));
         }
         return $result;
     }

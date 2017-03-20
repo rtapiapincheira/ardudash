@@ -13,6 +13,8 @@ Simple dashboard for receiving/displaying Arduino data and some basic controls.
 * configure update time 
 * database cleanup
 
+![Demo](assets/demo.png?raw=true "Demo")
+
 # License #
 
 You may, or may not, use it freely, under your own discretion.

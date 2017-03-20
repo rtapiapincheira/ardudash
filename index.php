@@ -15,6 +15,77 @@ $sdb = new SimpleDB;
         map_lat_center = <?=$map_lat_center?>;
         map_lon_center = <?=$map_lon_center?>;
         map_zoom_level = <?=$map_zoom_level?>;
+
+        data = {};
+
+        <?php
+        $lat = array();
+        $lon = array();
+
+        $hum = array();
+        $lig = array();
+        $tem = array();
+
+        foreach ($sdb->readEntries() as $e) {
+            $cdate = @$e[0];
+
+            $lat[] = @$e[1];
+            $lon[] = @$e[2];
+
+            $hum[] = array($cdate, @$e[3]);
+            $lig[] = array($cdate, @$e[4]);
+            $tem[] = array($cdate, @$e[5]);
+        }
+
+        if (count($hum) == 0) {
+            $hum = array(
+                array('2017-03-20 00:00:00', '0')
+            );
+            $lig = array(
+                array('2017-03-20 00:00:00', '0')
+            );
+            $tem = array(
+                array('2017-03-20 00:00:00', '0')
+            );
+        }
+
+        echo "\n";
+        echo "data.hum = [\n";
+        foreach($hum as $h) {
+            $hd = $h[0];
+            $hv = $h[1];
+            echo "['$hd', $hv],\n";
+        }
+        echo "];\n\n";
+
+        echo "data.lig = [\n";
+        foreach($lig as $l) {
+            $ld = $l[0];
+            $lv = $l[1];
+            echo "['$ld', $lv],\n";
+        }
+        echo "];\n\n";
+
+        echo "data.tem = [\n";
+        foreach($tem as $t) {
+            $td = $t[0];
+            $tv = $t[1];
+            echo "['$td', $tv],\n";
+        }
+        echo "];\n\n";
+
+        echo "data.lat = [\n";
+        foreach ($lat as $l) {
+            echo "$l,\n";
+        }
+        echo "];\n";
+
+        echo "data.lon = [\n";
+        foreach ($lon as $l) {
+            echo "$l,\n";
+        }
+        echo "];\n";
+        ?>
     </script>
 </head>
 <body>
@@ -51,16 +122,14 @@ $sdb = new SimpleDB;
 <?php
                 $entries = $sdb->readEntries();
                 foreach($entries as $e) {
-                    echo implode(',', $e);
+                    echo implode(',', $e)."\n";
                 }
 ?></pre>
         </div>
     </div>
     <div class="block">
         <h3>Plot</h3>
-        <div class="box2 tall">
-
-        </div>
+        <div id="chart" class="box2 tall"></div>
     </div>
 
     <br clear="both"/>
@@ -69,20 +138,29 @@ $sdb = new SimpleDB;
     <br/>
 
     <div>
+        <?php
+        $period = (int)SimpleDB::readValue('period.txt');
+        function may_select($value, $req) {
+            if ($value == $req) {
+                return 'selected="selected"';
+            }
+            return '';
+        }
+        ?>
         <form method="post" action="setconfig.php">
             <select name="update_period" class="separator_control">
-                <option value="15">15 seconds</option>
-                <option value="30">30 seconds</option>
-                <option value="60">60 seconds</option>
-                <option value="300">5 minutes</option>
-                <option value="900">15 minutes</option>
+                <option value="15" <?=may_select(15, $period)?>>15 seconds</option>
+                <option value="30" <?=may_select(30, $period)?>>30 seconds</option>
+                <option value="60" <?=may_select(60, $period)?>>60 seconds</option>
+                <option value="300" <?=may_select(300, $period)?>>5 minutes</option>
+                <option value="900" <?=may_select(900, $period)?>>15 minutes</option>
             </select>
 
             <button class="control_button styled_control styled_button ok" type="submit">Set update period</button>
         </form>
 
         <div class="separator_control">
-            Current: <?=SimpleDB::readValue('period.txt')?> seconds
+            Current: <?=$period?> seconds
         </div>
         <div class="separator_control"></div>
         <div class="separator_control"></div>
@@ -141,7 +219,13 @@ $sdb = new SimpleDB;
 
 <?=make_script('jquery.min.js')?>
 <?=make_script('jquery.jqplot.min.js')?>
+<?=make_script('jqplot.categoryAxisRenderer.js', 'assets/plugins')?>
+<?=make_script('jqplot.canvasTextRenderer.js', 'assets/plugins')?>
+<?=make_script('jqplot.cursor.js', 'assets/plugins')?>
+<?=make_script('jqplot.highlighter.js', 'assets/plugins')?>
+<?=make_script('jqplot.trendline.js', 'assets/plugins')?>
 <?=make_script('jqplot.dateAxisRenderer.js', 'assets/plugins')?>
+<?=make_script('jqplot.canvasAxisTickRenderer.js', 'assets/plugins')?>
 <?=make_script('page.js')?>
 <?=make_script('js?key='.$google_maps_api_key.'&callback=myMap', 'https://maps.googleapis.com/maps/api')?>
 
