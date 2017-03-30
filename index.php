@@ -139,7 +139,7 @@ $sdb = new SimpleDB;
 
     <div>
         <?php
-        $period = (int)SimpleDB::readValue('period.txt');
+        $period = (int)SimpleDB::readValue('data/period.txt');
         function may_select($value, $req) {
             if ($value == $req) {
                 return 'selected="selected"';
@@ -162,7 +162,14 @@ $sdb = new SimpleDB;
         <div class="separator_control">
             Current: <?=$period?> seconds
         </div>
-        <div class="separator_control"></div>
+        <div class="separator_control">
+            Actuator:
+            <?php if (SimpleDB::readValue('data/actuator.txt') == '1'): ?>
+                <span class="status_danger">Emergency!</span>
+            <?php else: ?>
+                <span class="status_normal">Normal</span>
+            <?php endif; ?>
+        </div>
         <div class="separator_control"></div>
 
         <button class="control_button styled_control styled_button warn" type="button" onclick="return cleanData();">Clean data</button>
@@ -179,8 +186,16 @@ $sdb = new SimpleDB;
     $http_host = $_SERVER['HTTP_HOST'];
     $request_uri = $_SERVER['REQUEST_URI'];
     $current_link = "http://{$http_host}{$request_uri}";
+    if (!endsWith($current_link, 'index.php')) {
+        if (endsWith($current_link, '/')) {
+            $current_link .= 'index.php';
+        } else {
+            $current_link .= '/index.php';
+        }
+    }
     $current_folder = substr($current_link, 0, strlen($current_link)-10);
     ?>
+
 
     <p class="notice">
         The entry point for the period is in the link <a href="<?=$current_folder?>/api.php" target="_blank"><?=$current_folder?>/api.php</a>.
@@ -195,8 +210,7 @@ $sdb = new SimpleDB;
         Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php</b>
     </p>
 
-    <br/>
-    <br/>
+    <hr/>
 
     <p class="notice">
         To send sensor data, Arduino and similar systems should make a GET call, this time specifying the parameters in the URL.
@@ -210,6 +224,23 @@ $sdb = new SimpleDB;
     <p class="notice">
         Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php?lat=LATITUDE&lon=LONGITUDE&hum=HUMIDTY&lig=LIGHT&tem=TEMPERATURE</b>
     </p>
+
+    <hr/>
+
+    <p class="notice">
+        Optionally, an additional parameter may be sent "act" to indicate an actuator has changed its state (value 0 or 1).
+        For example, <?php $url = "$current_folder/api.php?lat=-33.438722&lon=-70.653411&hum=65&lig=35&tem=43.5&act=1"; ?>
+        <a href="<?=$url?>" target="_blank"><?=$url?></a> (press the link, and reload this page; alternate between 0 and 1 to see the change)
+    </p>
+
+    <br/>
+
+    <p class="notice">
+        Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php?lat=LATITUDE&lon=LONGITUDE&hum=HUMIDTY&lig=LIGHT&tem=TEMPERATURE&act=ACTUATOR_0_OR_1</b>
+    </p>
+
+    <br/>
+    <br/>
 
 </div>
 

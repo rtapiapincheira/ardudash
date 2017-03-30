@@ -114,3 +114,15 @@
     width:900px;
     margin: auto;
 }
+
+.status_danger {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #cc0000;
+}
+
+.status_normal {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #00cc00;
+}

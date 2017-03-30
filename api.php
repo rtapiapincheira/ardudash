@@ -23,5 +23,7 @@ if (
     $sdb->addEntry($data);
 }
 
-$period = (int)(SimpleDB::readValue('period.txt'));
+SimpleDB::writeValue('data/actuator.txt', (@$_GET['act'] ? '1' : '0'));
+
+$period = (int)(SimpleDB::readValue('data/period.txt'));
 echo sprintf("%08d", $period);
