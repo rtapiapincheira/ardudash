@@ -16,6 +16,7 @@ class SimpleDB {
         while(($line = fgets($fid)) !== FALSE) {
             $result[] = explode(',', trim($line));
         }
+        fclose($fid);
         return $result;
     }
 
