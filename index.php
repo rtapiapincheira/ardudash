@@ -118,7 +118,7 @@ $sdb = new SimpleDB;
         <h3>Raw data</h3>
         <div class="box3 tall" style="overflow: scroll;">
             <pre style="font-size:8pt; font-family: Courier, Tahoma, Monospaced,serif;
-            text-align: left;">yyyy-MM-dd hh:mm:ss,lat,lon,hum,light,temp
+            text-align: left;">yyyy-MM-dd hh:mm:ss,lat,lon,hum,light,temp,fix
 <?php
                 $entries = $sdb->readEntries();
                 foreach($entries as $e) {
@@ -215,28 +215,35 @@ $sdb = new SimpleDB;
     <p class="notice">
         To send sensor data, Arduino and similar systems should make a GET call, this time specifying the parameters in the URL.
         For example, to send some real data, click the link and then reload this page to see it
-        <?php $url = "$current_folder/api.php?lat=-33.438722&lon=-70.653411&hum=65&lig=35&tem=43.5"; ?>
+        <?php $url = "$current_folder/api.php?lat=-33.438722&lon=-70.653411&hum=65&lig=35&tem=43.5&fix=2"; ?>
         <a href="<?=$url?>" target="_blank"><?=$url?></a>
     </p>
 
     <br/>
 
     <p class="notice">
-        Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php?lat=LATITUDE&lon=LONGITUDE&hum=HUMIDTY&lig=LIGHT&tem=TEMPERATURE</b>
+        Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php?lat=LATITUDE&lon=LONGITUDE&hum=HUMIDTY&lig=LIGHT&tem=TEMPERATURE&fix=FIXSTATUS</b>
+    </p>
+
+    <br/>
+
+    <p class="notice">
+        For the fix, a value of 0 or 1 means invalid gps data, so the server will search backwards and repeat the last known valid data. If fix is 2 or 3,
+        then, the data will be inserted as is (taken from the URL).
     </p>
 
     <hr/>
 
     <p class="notice">
         Optionally, an additional parameter may be sent "act" to indicate an actuator has changed its state (value 0 or 1).
-        For example, <?php $url = "$current_folder/api.php?lat=-33.438722&lon=-70.653411&hum=65&lig=35&tem=43.5&act=1"; ?>
+        For example, <?php $url = "$current_folder/api.php?lat=-33.438722&lon=-70.653411&hum=65&lig=35&tem=43.5&fix=2&act=1"; ?>
         <a href="<?=$url?>" target="_blank"><?=$url?></a> (press the link, and reload this page; alternate between 0 and 1 to see the change)
     </p>
 
     <br/>
 
     <p class="notice">
-        Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php?lat=LATITUDE&lon=LONGITUDE&hum=HUMIDTY&lig=LIGHT&tem=TEMPERATURE&act=ACTUATOR_0_OR_1</b>
+        Method: <b>GET</b>, Url: <b><?=$current_folder?>/api.php?lat=LATITUDE&lon=LONGITUDE&hum=HUMIDTY&lig=LIGHT&tem=TEMPERATURE&fix=FIXSTATUS&act=ACTUATOR_0_OR_1</b>
     </p>
 
     <br/>
