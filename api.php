@@ -2,6 +2,8 @@
 
 require_once('library/SimpleDB.php');
 
+setlocale(LC_ALL, 'us_US');
+
 $sdb = new SimpleDB;
 
 $act = isset($_GET['act']) ? $_GET['act'] : '0';
@@ -23,7 +25,7 @@ if (
     $tem = $_GET['tem'];
 
     $data = array(
-        date("Y-m-d H:i:s"),
+        date("Y-m-d H:i:s", strtotime("-6 hours")),
         $lat,
         $lon,
         $hum,
